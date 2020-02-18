@@ -18,6 +18,7 @@ class elastic_stack::repo (
   String            $proxy         = 'absent',
   Integer           $version       = 6,
   Optional[String]  $base_repo_url = undef,
+  Optional[String]  $architecture  = undef,
 ) {
   if $prerelease {
     $version_suffix = '.x-prerelease'
@@ -69,20 +70,21 @@ class elastic_stack::repo (
       include apt
 
       apt::source { 'elastic':
-        ensure   => 'present',
-        comment  => $description,
-        location => $base_url,
-        release  => 'stable',
-        repos    => 'main',
-        key      => {
+        ensure       => 'present',
+        comment      => $description,
+        location     => $base_url,
+        architecture => $architecture,
+        release      => 'stable',
+        repos        => 'main',
+        key          => {
           'id'     => $key_id,
           'source' => $key_source,
         },
-        include  => {
+        include      => {
           'deb' => true,
           'src' => false,
         },
-        pin      => $priority,
+        pin          => $priority,
       }
     }
     'RedHat', 'Linux': {
